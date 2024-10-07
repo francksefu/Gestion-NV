@@ -1,0 +1,43 @@
+#all-table-product {
+    display: none;
+}
+
+h4 {
+    font-weight: 100;
+}
+
+.horizontal {
+    overflow-x: auto;
+}
+
+.date1, .date2, .type_trie {
+    display: none;
+}
+
+html, body {
+    height: 100%;
+}
+.d-flex {
+    min-height: 50vh;
+}
+
+.table_a_disparaitre {
+    position: absolute;
+    top: 100px;
+    height: 50vh;
+    width: 50vw;
+    overflow: auto;
+    z-index: 5;
+}
+
+@media only screen and (max-width: 600px) {
+    .table_a_disparaitre {
+        position: absolute;
+        top: 100px;
+        height: 50vh;
+        width: 80vw;
+        overflow: auto;
+        z-index: 5;
+    }
+  }
+
