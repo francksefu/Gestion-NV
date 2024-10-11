@@ -1,7 +1,7 @@
 <?php
 
 function add_update_produit($urlpost, $flash = '', $Nom = '', $PrixAchat = '', $PrixVente = '', $PrixVmin = '', $QuantiteStock = '', $QuantiteStockMin = '', $DescriptionP = '', $addorupdate = 'add', $id = '') {
-    $width = $addorupdate == 'add' ? 6 : 10;
+    $width = 10;
     $content = "
     $flash
 <h2 class='text-secondary m-2 text-center'>Produit</h2>

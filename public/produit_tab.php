@@ -5,7 +5,7 @@
     require_once __DIR__.'/../features/Produit.php';
     require __DIR__.'/../inc/header.php';
     require __DIR__.'/func_produit.php';
-    require_login();
+    //require_login();
     $errors = [];
     $inputs = [];
     $valid = false;

@@ -2,6 +2,6 @@
 // for local test
 
     $host = 'localhost';
-    $db = 'utestmaria';
+    $db = 'maria';
     $user = 'root';
     $password = 'root';

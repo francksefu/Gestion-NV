@@ -17,9 +17,9 @@ h4 {
 html, body {
     height: 100%;
 }
-.d-flex {
+/*.d-flex {
     min-height: 50vh;
-}
+}*/
 
 .table_a_disparaitre {
     position: absolute;
