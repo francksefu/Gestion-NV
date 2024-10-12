@@ -10,10 +10,10 @@ require_once __DIR__ . '/connect.php';
       $this->client = 'client';
     }
 
-    public function insert ($NomClient, $Telephone)
+    public static function insert ($NomClient, $Telephone)
     {
       global $pdo;
-	  $sql = 'INSERT INTO Cient(NomClient, Telephone) VALUES(?,?)';
+	  $sql = 'INSERT INTO Client(NomClient, Telephone) VALUES(?,?)';
 
 	  $statement = $pdo->prepare($sql);
 	  
@@ -24,7 +24,7 @@ require_once __DIR__ . '/connect.php';
 	  return $pdo->lastInsertId();
     }
 
-    public function update ($NomClient, $Telephone, $idClient)
+    public static function update ($NomClient, $Telephone, $idClient)
     {
 		global $pdo;
 		$employe = [
@@ -44,7 +44,7 @@ require_once __DIR__ . '/connect.php';
         return false;
     }
 
-    public function delete ($idClient)
+    public static function delete ($idClient)
     {
 		global $pdo;
 		
@@ -60,10 +60,10 @@ require_once __DIR__ . '/connect.php';
         return false;
     }
 
-    public function read()
+    public static function read()
     {
 		global $pdo;
-		$sql = 'SELECT * FROM Client ORDER BY NomClient DESC LIMIT 800';
+		$sql = 'SELECT * FROM Client ORDER BY NomClient ASC ';
 
 		$statement = $pdo->query($sql);
 
