@@ -14,7 +14,7 @@ function add_update_client($urlpost, $flash = '', $NomClient = '', $Telephone = 
                 </div>
                 <div class='input-group mb-3'>
                     <span class='input-group-text' id='basic-addon1'>Numero de telephone du client </span>
-                    <input type='text' name='Telephone' class='form-control' value='$Telephone' placeholder='Ecrivez le nom du client ici' aria-label='Username' aria-describedby='basic-addon1'>
+                    <input type='text' name='Telephone' class='form-control' value='$Telephone' placeholder='Ecrivez le numero de telephone du client ici' aria-label='Username' aria-describedby='basic-addon1'>
                 </div>
                 
             </div>
