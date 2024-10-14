@@ -38,7 +38,7 @@ if ($addorupdate === 'update') {
 }
 
 if ($addorupdate === 'add') {
-    if (! empty($TypeD)) {
+    if (! empty($TypeD) && ! empty($Montant)) {
         if (Sortie::insert($TypeD, $Montant, $il_pris_quoi, $DatesD)) {
             redirect_with_message('Insertion fait avec success !', FLASH_SUCCESS, 'sortie', "sortie_tab.php");
         } else {

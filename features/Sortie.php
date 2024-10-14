@@ -6,7 +6,7 @@ require_once __DIR__ . '/connect.php';
     public static function insert ($TypeD, $Montant, $il_pris_quoi, $DatesD)
     {
       global $pdo;
-	  $sql = 'INSERT INTO Sortie($TypeD, $Montant, $il_pris_quoi, $DatesD) VALUES(?,?,?,?)';
+	  $sql = 'INSERT INTO Sortie(TypeD, Montant, il_pris_quoi, DatesD) VALUES(?,?,?,?)';
 
 	  $statement = $pdo->prepare($sql);
 	  

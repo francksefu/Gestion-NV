@@ -2,6 +2,11 @@
 
 function add_update_sortie($urlpost, $flash = '', $TypeD = '', $Montant = '', $il_pris_quoi = '', $DatesD = '', $addorupdate = 'add', $id = '') {
     $width = 10;
+
+    $selectedAutres = $TypeD == 'Autres' ? 'selected' : '';
+    $selectedDepense = $TypeD == 'Depense' ? 'selected' : '';
+    $selectedCharge = $TypeD == 'Charge' ? 'selected' : '';
+
     $content = "
     $flash
 <h2 class='text-secondary m-2 text-center'>Sortie</h2>
@@ -10,16 +15,16 @@ function add_update_sortie($urlpost, $flash = '', $TypeD = '', $Montant = '', $i
             <div class='col-md-$width'>
                 <div class='input-group mb-3'>
                     <span class='input-group-text' id='basic-addon1'>Type de sortie</span>
-                    <select name='$TypeD' class='form-select form-select-lg mb-3' aria-label='.form-select-lg example'>
-                        <option selected>Open this select menu</option>
-                        <option value='1'>One</option>
-                        <option value='2'>Two</option>
-                        <option value='3'>Three</option>
+                    <select name='TypeD' class='form-select form-select-lg mb-3' aria-label='.form-select-lg example'>
+                        <option value='Autres' $selectedAutres>Autres</option>
+                        <option value='Charge' $selectedCharge>Charge</option>
+                        <option value='Depense' $selectedDepense>Depense</option>
                     </select>
                 </div>
                 <div class='input-group mb-3'>
                     <span class='input-group-text' id='basic-addon1'>Montant </span>
-                    <input type='number' step='0.0001' name='Telephone' class='form-control' value='$Montant' placeholder='Ecrivez le montant en $ ici' aria-label='Username' aria-describedby='basic-addon1'>
+                    <input type='number' step='0.0001' name='Montant' class='form-control' value='$Montant' placeholder='Ecrivez le montant en $ ici' aria-label='Username' aria-describedby='basic-addon1'>
+                    <span class='input-group-text' id='basic-addon1'>$</span>
                 </div>
                 <div class='input-group mb-3'>
                     <span class='input-group-text' id='basic-addon1'>Motif</span>
