@@ -164,5 +164,21 @@ $(document).ready(function(){
         }
       });
   })
+
+
   
+
+$(document).ready(function() {
+    //$('.js-example-basic-single').select2();
+    // JavaScript
+    $(function () {
+        $('#country').select2({
+            dropdownParent: $('.myModal')
+        });
+    });
+
+});
+
+
+
 
