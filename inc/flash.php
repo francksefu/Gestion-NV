@@ -137,7 +137,7 @@ function modal($id, $modaltitle, $modalbody, $linkaction, $namepost, $valuepost,
     }
     
     $content = "
-    <div class='modal fade myModal' id='$id'  aria-labelledby='exampleModalLabel' aria-hidden='true'>
+    <div class='modal fade' id='$id'  aria-labelledby='exampleModalLabel' aria-hidden='true'>
       <div class='modal-dialog'>
         <div class='modal-content'>
           <div class='modal-header'>

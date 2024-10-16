@@ -2,6 +2,7 @@
 
 function add_update_bonusperte($urlpost, $flash = '', $idProduit = '', $QuantiteGagne = '', $QuantitePerdu = '', $DatesD = '', $Motif = '',$addorupdate = 'add', $id = '') {
     $width = 10;
+    $option = selectOptionForProduct($idProduit);
     $content = "
     $flash
 <h2 class='text-secondary m-2 text-center'> Bonus ou Perte</h2>
@@ -11,10 +12,7 @@ function add_update_bonusperte($urlpost, $flash = '', $idProduit = '', $Quantite
                 <div class='input-group mb-3'>
                     <span class='input-group-text' id='basic-addon1'>Produit</span>
                     <select name='idProduit' class='js-example-basic-single form-select form-select-lg'>
-                        <option value='1'>Autres</option>
-                        <option value='2'>Charge</option>
-                        <option value='3'>Depense</option>
-                        <option value='4'>Courant</option>
+                        $option
                     </select>
                 </div>
                 <div class='input-group mb-3'>

@@ -50,3 +50,18 @@ function add_update_produit($urlpost, $flash = '', $Nom = '', $PrixAchat = '', $
     </form>";
     return $content;
 }
+
+function selectOptionForProduct($idProduit = '') {
+    $produit = new Produit();
+    $arrayOfProduct = $produit->read();
+    $option = '';
+    foreach($arrayOfProduct as $array) {
+        if (! empty($idProduit) && ($idProduit == $array["idProduit"])) {
+            $option .= "<option value='".$array["idProduit"]."' selected>Nom : ".$array["Nom"].", PV : ".$array["PrixVente"]."$, QStock : ".$array["QuantiteStock"]."</option>";
+        } else {
+            $option .= "<option value='".$array["idProduit"]."'>Nom : ".$array["Nom"].", PV : ".$array["PrixVente"]."$, QStock : ".$array["QuantiteStock"]."</option>";
+        }
+        
+    }
+    return $option;
+}

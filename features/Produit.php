@@ -82,7 +82,7 @@ require_once __DIR__ . '/connect.php';
             $statement->execute([$idProduit]);
         }
 
-		// get all publishers
+		// get all 
 		return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -106,7 +106,7 @@ require_once __DIR__ . '/connect.php';
 		if ($statement->execute([$newQuantity, $idProduit])) {
 			return true;
 		} 
-        return false;
+      return false;
     }
 
   }

@@ -5,7 +5,7 @@ require_once __DIR__ . '/connect.php';
 
     public static function insert ($idProduit, $QuantitePerdu, $QuantiteGagne, $DatesD, $Motif)
     {
-      global $pdo;
+      global $pdo, $produit;
 	  $sql = 'INSERT INTO BonusPerte(idProduit, QuantitePerdu, QuantiteGagne, DatesD, Motif) VALUES(?,?,?,?,?)';
 
 	  $statement = $pdo->prepare($sql);
@@ -14,15 +14,24 @@ require_once __DIR__ . '/connect.php';
 		$idProduit, $QuantitePerdu, $QuantiteGagne, $DatesD, $Motif
 	  ]);
 
-	  return $pdo->lastInsertId();
+      if ($pdo->lastInsertId()) {
+        self::increaseProductInStock($idProduit, $QuantiteGagne);
+        self::decreaseProductInStock($idProduit, $QuantitePerdu);
+        return true;
+      }
+      return false;
     }
 
-    public static function update ($idProduit, $QuantitePerdu, $QuantiteGagne, $DatesD, $Motif)
+    public static function update ($idProduit, $QuantitePerdu, $QuantiteGagne, $DatesD, $Motif, $idBonusPerte)
     {
-		global $pdo;
+		global $pdo, $produit;
 		$employe = [
-			$idProduit, $QuantitePerdu, $QuantiteGagne, $DatesD, $Motif
+			$idProduit, $QuantitePerdu, $QuantiteGagne, $DatesD, $Motif, $idBonusPerte
 		];
+        //remettre les anciennes quantite avant la modification
+        $oldBonusPerte = self::read($idBonusPerte);
+        self::increaseProductInStock($oldBonusPerte[0]['idProduit'], $oldBonusPerte[0]['QuantitePerdu']);
+        self::decreaseProductInStock($oldBonusPerte[0]['idProduit'], $oldBonusPerte[0]['QuantiteGagne']);
 		
 		$sql = 'UPDATE BonusPerte
 				SET idProduit = ?, QuantitePerdu = ?, QuantiteGagne = ?, DatesD = ?, Motif = ?
@@ -32,6 +41,8 @@ require_once __DIR__ . '/connect.php';
 
 		// execute the UPDATE statment
 		if ($statement->execute($employe)) {
+            self::increaseProductInStock($idProduit, $QuantiteGagne);
+            self::decreaseProductInStock($idProduit, $QuantitePerdu);
 			return true;
 		}
         return false;
@@ -40,7 +51,9 @@ require_once __DIR__ . '/connect.php';
     public static function delete ($id)
     {
 		global $pdo;
-		
+        $oldBonusPerte = self::read($id);
+        self::increaseProductInStock($oldBonusPerte[0]['idProduit'], $oldBonusPerte[0]['QuantitePerdu']);
+        self::decreaseProductInStock($oldBonusPerte[0]['idProduit'], $oldBonusPerte[0]['QuantiteGagne']);
 		$sql = 'DELETE FROM BonusPerte
         WHERE idBonusPerte = ?';
 		
@@ -53,16 +66,33 @@ require_once __DIR__ . '/connect.php';
         return false;
     }
 
-    public static function read()
+    public static function read($idBonusPerte = null)
     {
 		global $pdo;
-		$sql = 'SELECT * FROM BonusPerte ORDER BY idBonusPerte DESC ';
-
-		$statement = $pdo->query($sql);
+        if(empty((int) $idBonusPerte)) {
+            $sql = 'SELECT * FROM BonusPerte order by idBonusPerte desc';
+            $statement = $pdo->query($sql);
+        } else {
+            $sql = 'SELECT * FROM BonusPerte WHERE idBonusPerte = ? order by idBonusPerte desc';
+            $statement = $pdo->prepare($sql);
+            $statement->execute([$idBonusPerte]);
+        }
 
 		// get all publishers
 		return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
+    public static function increaseProductInStock($idProduit, $Quantite) {
+        global $produit;
+        if (! empty($Quantite)) {
+            $produit->ajouter_soustraire_entree_depot($idProduit, $Quantite, 'add');
+        }
+    }
 
+    public static function decreaseProductInStock($idProduit, $Quantite) {
+        global $produit;
+        if (! empty($Quantite)) {
+            $produit->ajouter_soustraire_entree_depot($idProduit, $Quantite, 'delete');
+        }
+    }
 
   }

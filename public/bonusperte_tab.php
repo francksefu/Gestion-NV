@@ -2,6 +2,7 @@
     session_start();
     require __DIR__.'/../inc/flash.php';
     require __DIR__.'/../inc/func_bonusperte.php';
+    require __DIR__.'/../inc/func_produit.php';
     require_once __DIR__.'/../features/Produit.php';
     require_once __DIR__.'/../features/BonusPerte.php';
     require __DIR__.'/../inc/header.php';
@@ -10,6 +11,7 @@
     $inputs = [];
     $valid = false;
     $produit = new Produit();
+    $allProduct = $produit->read();
     $default_array = BonusPerte::read();
     $total = count($default_array);
     $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
