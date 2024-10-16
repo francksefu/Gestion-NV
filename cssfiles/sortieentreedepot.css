@@ -30,6 +30,10 @@ html, body {
     z-index: 5;
 }
 
+.select2-container {
+    z-index: 999999;
+}
+
 @media only screen and (max-width: 600px) {
     .table_a_disparaitre {
         position: absolute;
