@@ -109,4 +109,17 @@ require_once __DIR__ . '/connect.php';
       return false;
     }
 
+    public static function increaseProductInStock($idProduit, $Quantite) {
+
+      if (! empty($Quantite)) {
+          self::ajouter_soustraire_entree_depot($idProduit, $Quantite, 'add');
+      }
+    }
+
+  public static function decreaseProductInStock($idProduit, $Quantite) {
+      if (! empty($Quantite)) {
+          self::ajouter_soustraire_entree_depot($idProduit, $Quantite, 'delete');
+      }
+  }
+
   }

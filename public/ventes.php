@@ -10,9 +10,8 @@
     $errors = [];
     $inputs = [];
     $valid = false;
-    $client = new Client();
     $produit = new Produit();
-    $array_of_clients = $client->read();
+    $array_of_clients = Client::read();
     $array_of_products = $produit->read(); 
     $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
     if($request_method === 'GET') {

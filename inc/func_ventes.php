@@ -1,6 +1,7 @@
 <?php
-function add_update_ventes($url, $flash = '', array $array_of_clients = [], array $array_of_products = [], $idClient = '', $array_of_selected_products = '', $date = '', $vendeur = '', $montant = '', $reste = '', $total = '', $addorupdate = 'add', $operation = '') 
+function add_update_ventes($url, $flash = '', $idClient = '', $array_of_selected_products = '', $date = '', $vendeur = '', $montant = '', $reste = '', $total = '', $addorupdate = 'add', $operation = '') 
 {
+    global $array_of_products;
     $line_of_selected_products = '';
     
     if(! empty($array_of_selected_product)) {
@@ -14,18 +15,7 @@ function add_update_ventes($url, $flash = '', array $array_of_clients = [], arra
             }
         }
     }
-    $line = '';
-    foreach($array_of_products as $array) {
-        $line .= "
-                <tr class='line_to_take'>
-                    <th class='id'>".$array['ImageLink']."</th>
-                    <td class='nom'>".$array['Nom']."</td>
-                    <td class='prixVente'>".$array['PrixVente']."</td>
-                    <td class='prixVmin'>".$array['PrixVmin']."</td>
-                    <td class='quantiteStock'>".$array['QuantiteStock']."</td>
-                </tr>
-        ";
-    }
+    
     $content = "
 $flash
 <div class='container bg-transparent pt-5'>
@@ -56,23 +46,7 @@ $flash
         <input id='pvu' type='number' step='0.0001' class='form-control' placeholder='prix de vente' aria-label='Server'>
         <span class='input-group-text'>$</span>
         <a id='add' href='#' class='text-decoration-none'><span class='input-group-text bg-success text-white'>&plus;</span></a>
-        <div class='table_a_disparaitre bg-white'>
-                <table class='table table-bordered' id='all-table-product' >
-                    <thead>
-                        <tr>
-                        <th scope='col'>Imagek</th>
-                        <th scope='col'>nom du produit</th>
-                        <th scope='col'>Prix de vente</th>
-                        <th scope='col'>Prix de vente min</th>
-                        <th scope='col'>quantite en stock</th>
-                        </tr>
-                    </thead>
-                    <tbody id='myTable'>
-                        $line
-                    </tbody>
-
-                </table>
-            </div>
+        
     </div>
     <small id='produitVide'></small>
     <small id='quantiteVide'></small>
@@ -175,8 +149,6 @@ $flash
     <input type='hidden' id='operation'/>
     <input type='hidden' name='addorupdate' value='$addorupdate'>
     <input type='hidden' name='operation' value='$operation'>
-    <input type='hidden' id='array_of_clients' value='$array_of_clients'>
-    <input type='hidden' id='array_of_products' value='$array_of_products'>
     <input type='hidden' id='stock' value='stock1' />
 </form>
 </div>
