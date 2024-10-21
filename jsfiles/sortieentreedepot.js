@@ -9,19 +9,7 @@ $(document).ready(function(){
           $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
       });
-    $('#myInput').on('focus', function() {
-        $('#all-table-product').show();
-        
-        $('.line_to_take').on('click', function() {
-            var unite = $(this).children('.unite_de_mesure').text();
-            var content = $(this).children('.nom').text();
-            var contenu_produit = {id: $(this).children('.id').text(), nom: $(this).children('.nom').text(), quantite: $(this).children('.quantiteStock').text(), unite_mesure: $(this).children('.unite_de_mesure').text()};
-            $('#contenu_produit').val(JSON.stringify(contenu_produit));
-            $('#unite_de_mesure').text(unite);
-            $('#myInput').val(content);
-            $('#all-table-product').hide();
-        })
-    });
+    
     $('#button').on('click', function() {
         if ($('#contenu_produit').val() !== '' && $('#quantite').val() !== '') {
             let tab = JSON.parse($('#contenu_produit').val());
@@ -171,6 +159,90 @@ $(document).ready(function(){
 $(document).ready(function() {
     $('.js-example-basic-single').select2();
 
+});
+function findProduct(idProduit) {
+    let allProduct = $('#allProduct').val();
+    allProduct = JSON.parse(allProduct);
+
+    for(let product of allProduct) {
+        if(product['idProduit'] != idProduit) {
+            continue;
+        } else {
+            return product;
+        }
+    }
+}
+
+function isItAnEmptyString(element, message) {
+    if(element.val() == '') {
+        throw new Error(message);
+    }
+    return '';
+}
+$(document).ready(function() {
+    let array_of_selected_products = $('#array_of_selected_products').val();
+    array_of_selected_products = JSON.parse(array_of_selected_products);
+    let inputIdProduit = $('#idProduit');
+    let inputQuantite = $('#quantite');
+    let inputPrixVenteU = $('#pvu');
+    $('#add').on('click', function() {
+        
+        try {
+            isItAnEmptyString(inputIdProduit, 'Le produit ne doit pas etre vide <br>');
+            isItAnEmptyString(inputQuantite, 'Veuillez completer la quantite svp <br>');
+            isItAnEmptyString(inputPrixVenteU, 'Veuillez completer le prix de vente svp <br>');
+            if (! isValidNumber(inputQuantite.val())) {
+                throw new Error('La quantite doit etre des chiffres uniquement, pas des lettres svp <br>');
+            }
+
+            if (! isValidNumber(inputPrixVenteU.val())) {
+                throw new Error('Le prix de vente unitaire doit etre des chiffres uniquement, pas des lettres svp <br>');
+            }
+            let produit = findProduct(inputIdProduit.val());
+            if ($(inputQuantite).val() > produit['QuantiteStock']) {
+                throw new Error('La quantite que vous entrez est le superieur a la quantite en stock');
+            }
+            if ($(inputPrixVenteU).val() < produit['PrixVmin']) {
+                throw new Error('Vous voulez vendre ce produit a un tres bas prix, veuillez verifier le prix de vente minimum de ce produit dans le menu produit svp. merci<br>');
+            }
+            let image = (produit['ImageLink']) && (produit['ImageLink'].includes('.')) ? produit['ImageLink'] : 'banane.png';
+            let line_product = `
+                <div class='d-flex flex-row' id='taille'>
+                    <img src ='upload_files/${image}' class=' photo m-0' width='70px' height='70px' alt='produit'>
+                    <div class='ps-2 m-0'>
+                        <h4 class='text-end'>"${produit['Nom']}"</h4>
+                        <small class='text-secondary'>"${produit['DescriptionP']}"</small><br>
+                        <button type='button' class='btn btn-success m-1' data-bs-toggle='modal' data-bs-target='#picture_".$array['idBonusPerte']."'> Voir photo</button>
+                    </div>
+                </div>
+            `;
+            let line = "<tr class='line_show'><td>"+line_product+"</td><td>" + $('#quantite').val() + "</td><td>" + $('#pvu').val() + "</td><td>" + ($('#quantite').val() * 1) * ($('#pvu').val()*1) + "</td><td> <a href='#' class='btn btn-danger supprime'> Supprimer </a> </td></tr>";
+            $('#long-list-of-selected-products').append(line);
+            array_of_selected_products.push({produit: produit, QuantiteVendu: $('#quantite').val(), PU: $('#pvu').val(), PT: function(){return this.QuantiteVendu * this.PU}});
+            $('#array_of_selected_products').val(JSON.stringify(array_of_selected_products));
+            
+            $(inputIdProduit).val('0');
+            $(inputQuantite).val('');
+            $(inputPrixVenteU).val('');
+            $('#error').html('');
+            $('#error').attr('class', '');
+        } catch(error) {
+            $('#error').html(error.message);
+            $('#error').addClass('alert alert-danger');
+        } finally {
+            if (array_of_selected_products) {
+                let total = 0;
+                for(let selected_produit of array_of_selected_products) {
+                    total += selected_produit['PT']();
+                }
+                $('#total').val(total);
+            }
+        }
+        
+    });
+    $(inputIdProduit).on('change', function(){
+        $(inputPrixVenteU).val(findProduct(inputIdProduit.val())['PrixVente']);
+    });
 });
 
 

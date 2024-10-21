@@ -54,12 +54,12 @@ function add_update_produit($urlpost, $flash = '', $Nom = '', $PrixAchat = '', $
 function selectOptionForProduct($idProduit = '') {
     $produit = new Produit();
     $arrayOfProduct = $produit->read();
-    $option = '';
+    $option = "<option stock='' value='0'>Choisir un produit</option>";
     foreach($arrayOfProduct as $array) {
         if (! empty($idProduit) && ($idProduit == $array["idProduit"])) {
-            $option .= "<option value='".$array["idProduit"]."' selected>Nom : ".$array["Nom"].", PV : ".$array["PrixVente"]."$, QStock : ".$array["QuantiteStock"]."</option>";
+            $option .= "<option stock='".$array["QuantiteStock"]."' value='".$array["idProduit"]."' selected>Nom -> ".$array["Nom"]." | PV -> ".$array["PrixVente"]."$ | QStock : ".$array["QuantiteStock"]."</option>";
         } else {
-            $option .= "<option value='".$array["idProduit"]."'>Nom : ".$array["Nom"].", PV : ".$array["PrixVente"]."$, QStock : ".$array["QuantiteStock"]."</option>";
+            $option .= "<option stock='".$array["QuantiteStock"]."' value='".$array["idProduit"]."'>Nom -> ".$array["Nom"]." | PV -> ".$array["PrixVente"]."$ | QStock -> ".$array["QuantiteStock"]."</option>";
         }
         
     }

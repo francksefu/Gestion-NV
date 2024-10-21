@@ -1,6 +1,8 @@
 <?php
     session_start();
     require __DIR__.'/../inc/func_ventes.php';
+    require __DIR__.'/../inc/func_client.php';
+    require __DIR__.'/../inc/func_produit.php';
     require __DIR__.'/../inc/flash.php';
     require_once __DIR__.'/../features/Ventes.php';
     require_once __DIR__.'/../features/Produit.php';

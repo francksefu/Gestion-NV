@@ -74,9 +74,9 @@
                         </tr>
                 ";
                 //
-                $content_update = add_update_client(htmlspecialchars($_SERVER['PHP_SELF']), '', $array['NomClient'], $array['Telephone'], 'update', $array['idClient']);
-                echo true ? modal("delete_".$array['idClient']."", "Supprimer le client ".$array['NomClient']."", "Voulez-vous vraiment supprimer le client ".$array['NomClient']." qui a l ID : ".$array['idClient']."", htmlspecialchars($_SERVER["PHP_SELF"]), 'delete', "delete_".$array['idClient']."", 'supprimer') : '';
-                echo true ? modal("update_".$array['idClient']."", 'Modifier le client', $content_update, htmlspecialchars($_SERVER["PHP_SELF"]), 'update', "update_".$array['idClient']."", 'modifier', '', false) : '' ;
+                $content_update = add_update_vente(htmlspecialchars($_SERVER['PHP_SELF']), '', $array['NomClient'], $array['Telephone'], 'update', $array['idClient']);
+                echo true ? modal("delete_".$array['Operation']."", "Supprimer la facture de vente ".$array['DatesVente']."", "Voulez-vous vraiment supprimer la facture dont l operation est : ".$array['Operation']." qui a ete faite le : ".$array['DatesVente']."", htmlspecialchars($_SERVER["PHP_SELF"]), 'delete', "delete_".$array['Operation']."", 'supprimer') : '';
+                echo true ? modal("update_".$array['Operation']."", 'Modifier la vente', $content_update, htmlspecialchars($_SERVER["PHP_SELF"]), 'update', "update_".$array['Operation']."", 'modifier', '', false) : '' ;
                 echo $line;
             }
             $content_add = add_update_client(htmlspecialchars($_SERVER['PHP_SELF']), '');

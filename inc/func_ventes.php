@@ -1,11 +1,14 @@
 <?php
-function add_update_ventes($url, $flash = '', $idClient = '', $array_of_selected_products = '', $date = '', $vendeur = '', $montant = '', $reste = '', $total = '', $addorupdate = 'add', $operation = '') 
+function add_update_ventes($url, $flash = '', $idClient = '', $array_of_selected_products = [], $date = '', $vendeur = '', $montant = '', $reste = '', $total = '', $addorupdate = 'add', $operation = '') 
 {
     global $array_of_products;
+    $allProduct = json_encode($array_of_products);
+    $optionClient = selectOptionForClient($idClient);
+    $optionProduit = selectOptionForProduct();
     $line_of_selected_products = '';
     
-    if(! empty($array_of_selected_product)) {
-        $arr_p_q = json_decode($array_of_selected_product, true);
+    if(! empty($array_of_selected_products)) {
+        $arr_p_q = $array_of_selected_products;
         foreach($arr_p_q as $product_quantity) {
             foreach($array_of_products as $product) {
                 if($product_quantity['idProduit'] == $product['idProduit']) {
@@ -26,8 +29,9 @@ $flash
         <div class='input-group mb-3' >
             <div class='input-group mb-3' id='ancien-client'>
                 <span class='input-group-text' id='basic-addon1'>Nom*</span>
-                <input required type='text' list='dataPersonnel' id='nomClient' class='form-control' placeholder='Nom du client' aria-label='Username' aria-describedby='basic-addon1'>
-                <input type='hidden' id='idClient'>
+                    <select name='idClient' class='js-example-basic-single form-select form-select-lg'>
+                        $optionClient
+                    </select>
             </div>
             <small id='clientVide'></small>
         </div>
@@ -37,8 +41,9 @@ $flash
     <div class='input-group mb-3 pt-5 pb-4' id='ajoutons'>
         <a id='remove' href='#' class='text-decoration-none'><span class='input-group-text bg-danger text-white'>&cross;</span></a>
         <span class='input-group-text border border-primary'>Nom</span>
-        <input id='myInput' type='text' class='form-control border border-primary w-25' placeholder='Entrer nom du produit' aria-label='Username'>
-            
+            <select id='idProduit' name='idProduit' class='js-example-basic-single form-select form-select-lg'>
+                $optionProduit
+            </select>
 
         <span class='input-group-text border border-success'>Quantite</span>
         <input id='quantite' type='number' step='0.0001' class='form-control border border-success' placeholder='Quantite' aria-label='Server'>
@@ -48,6 +53,7 @@ $flash
         <a id='add' href='#' class='text-decoration-none'><span class='input-group-text bg-success text-white'>&plus;</span></a>
         
     </div>
+     <small id='error'></small>
     <small id='produitVide'></small>
     <small id='quantiteVide'></small>
     <small id='pvuVide'></small>
@@ -63,7 +69,7 @@ $flash
             <th>Action</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id='long-list-of-selected-products'>
                                   
         </tbody>
     </table>
@@ -147,6 +153,8 @@ $flash
     <input type='hidden' id='state' >
     <input type='hidden' id='i' value=''>
     <input type='hidden' id='operation'/>
+    <input type='text' id='array_of_selected_products' value='".json_encode($array_of_selected_products)."'>
+    <input type='text' id='allProduct' value='$allProduct'>
     <input type='hidden' name='addorupdate' value='$addorupdate'>
     <input type='hidden' name='operation' value='$operation'>
     <input type='hidden' id='stock' value='stock1' />

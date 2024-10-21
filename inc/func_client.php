@@ -65,3 +65,16 @@ function delete_client()
     }
 }
 
+function selectOptionForClient($idClient = '') {
+    $arrayOfClient = Client::read();
+    $option = "<option value=''>Choisir un client</option>";
+    foreach($arrayOfClient as $array) {
+        if (! empty($idClient) && ($idClient == $array["idClient"])) {
+            $option .= "<option value='".$array["idClient"]."' selected>Nom -> ".$array["NomClient"]." | ID -> ".$array["idClient"]." | Telephone -> ".$array["Telephone"]."</option>";
+        } else {
+            $option .= "<option value='".$array["idClient"]."'>Nom -> ".$array["NomClient"]." | ID -> ".$array["idClient"]." | Telephone -> ".$array["Telephone"]."</option>";
+        }
+        
+    }
+    return $option;
+}
