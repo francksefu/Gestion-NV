@@ -11,7 +11,7 @@ require_once __DIR__ . '/Produit.php';
       $this->vente = 'vente';
     }
 
-    public function insert ($idProduit, $idClient, $QuantiteVendu, $PU, $PT, $DatesVente, $Operation, $Dette, $TotalFacture, $MontantPaye, $idPersonnel)
+    public static function insert ($idProduit, $idClient, $QuantiteVendu, $PU, $PT, $DatesVente, $Operation, $Dette, $TotalFacture, $MontantPaye, $idPersonnel)
     {
       global $pdo;
 	  $sql = 'INSERT INTO Ventes(idProduit, idClient, QuantiteVendu, PU, PT, DatesVente, Operation, Dette, TotalFacture, MontantPaye, idPersonnel) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
@@ -19,43 +19,38 @@ require_once __DIR__ . '/Produit.php';
 	  $statement = $pdo->prepare($sql);
 	  
       if ($statement->execute([$idProduit, $idClient, $QuantiteVendu, $PU, $PT, $DatesVente, $Operation, $Dette, $TotalFacture, $MontantPaye, $idPersonnel])) {
-        
-        $produit = new Produit();
-        $produit->ajouter_soustraire_produit($idProduit, $QuantiteVendu, 'delete');
+        Produit::decreaseProductInStock($idProduit, $QuantiteVendu, 'delete');
         return true;
       }
       return false;
     }
 
-    public function insert_multiple($array)
+    public static function insert_multiple($array)
     {
         foreach($array as $arr) {
-            if (! ($this->insert($arr['idProduit'], $arr['idClient'], $arr['QuantiteVendu'], $arr['PU'], $arr['PT'], $arr['DatesVente'], $arr['Operation'], $arr['Dette'], $arr['DatesVente'], $arr['TotalFacture'], $arr['MontantPaye'], $arr['idPersonnel']))) {
+            if (! (self::insert($arr['idProduit'], $arr['idClient'], $arr['QuantiteVendu'], $arr['PU'], $arr['PT'], $arr['DatesVente'], $arr['Operation'], $arr['Dette'], $arr['DatesVente'], $arr['TotalFacture'], $arr['MontantPaye'], $arr['idPersonnel']))) {
                 return false;
             }
         }
         return true;
     }
 
-    public function update ($Operation, $array)
+    public static function update ($Operation, $array)
     {
-		global $pdo;
-        if($this->delete($Operation)) {
-            $this->insert_multiple($array);
+        if(self::delete($Operation)) {
+            self::insert_multiple($array);
             return true;
         }
 		return false;
     }
 
-    public function delete ($Operation)
+    public static function delete ($Operation)
     {
 		global $pdo;
-		$to_update_product = $this->read($Operation);
-        if ($to_update_product[0]) {
-            $type = 'add';
-            $produit = new Produit();
-            foreach($to_update_product as $array) {
-                $produit->ajouter_soustraire_produit($array['idProduit'], $array['QuantiteVendu'], $type);
+		$takeLinesOfVentesToDelete = self::read($Operation);
+        if (! empty($takeLinesOfVentesToDelete)) {
+            foreach($takeLinesOfVentesToDelete as $array) {
+                Produit::increaseProductInStock($array['idProduit'], $array['QuantiteVendu']);
             }
             $sql = 'DELETE FROM Ventes
             WHERE Operation = ?';
@@ -73,7 +68,28 @@ require_once __DIR__ . '/Produit.php';
 		
     }
 
-    public function read_group_by_facture($type, $date1 = '', $date2 = '')
+    public static function read($Operation = null)
+    {
+        global $pdo;
+        if(! empty($Operation)) {
+            $sql = 'SELECT * FROM Ventes WHERE Operation = ? ORDER BY idVentes DESC';
+            $statement = $pdo->prepare($sql);
+            if ($statement->execute([$Operation])) {
+                return $statement->fetchAll(PDO::FETCH_ASSOC);
+            }
+        } else {
+            $sql = 'SELECT * FROM Ventes GROUP BY Operation ORDER BY idVentes DESC LIMIT 900';
+
+            $statement = $pdo->query($sql);
+
+            // get all publishers
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        }
+		
+        return false;
+    }
+
+   /* public static function read_group_by_facture($type, $date1 = '', $date2 = '')
 {
     global $pdo;
     $array_to_return = [];
@@ -117,11 +133,11 @@ require_once __DIR__ . '/Produit.php';
 }
 
 
-    public function read($Operation = null, $idProduit = null, $date1 = null, $date2 = null)
+   /* public function read($Operation = null, $idProduit = null, $date1 = null, $date2 = null)
     {
 		global $pdo;
 		if ($Operation) {
-			$sql = 'SELECT * FROM Ventes WHERE Operation = ? ORDER BY idVentes DESC LIMIT 900';
+			$sql = 'SELECT * FROM Ventes WHERE Operation = ? ORDER BY idVentes DESC';
             $statement = $pdo->prepare($sql);
             if ($statement->execute([$Operation])) {
                 return $statement->fetchAll(PDO::FETCH_ASSOC);

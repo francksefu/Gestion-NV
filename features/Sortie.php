@@ -1,39 +1,32 @@
 <?php
 require_once __DIR__ . '/connect.php';
 
-  class Client {
-    
-    public $client;
+  class Sortie {
 
-    function __construct()
-    {
-      $this->client = 'client';
-    }
-
-    public static function insert ($NomClient, $Telephone)
+    public static function insert ($TypeD, $Montant, $il_pris_quoi, $DatesD)
     {
       global $pdo;
-	  $sql = 'INSERT INTO Client(NomClient, Telephone) VALUES(?,?)';
+	  $sql = 'INSERT INTO Sortie(TypeD, Montant, il_pris_quoi, DatesD) VALUES(?,?,?,?)';
 
 	  $statement = $pdo->prepare($sql);
 	  
 	  $statement->execute([
-		$NomClient, $Telephone
+		$TypeD, $Montant, $il_pris_quoi, $DatesD
 	  ]);
 
 	  return $pdo->lastInsertId();
     }
 
-    public static function update ($NomClient, $Telephone, $idClient)
+    public static function update ($TypeD, $Montant, $il_pris_quoi, $DatesD, $idSortie)
     {
 		global $pdo;
 		$employe = [
-			$NomClient, $Telephone, $idClient
+			$TypeD, $Montant, $il_pris_quoi, $DatesD ,$idSortie
 		];
 		
-		$sql = 'UPDATE Client
-				SET NomClient = ?, Telephone = ?
-				WHERE idClient = ?';
+		$sql = 'UPDATE Sortie
+				SET TypeD = ?, Montant = ?, il_pris_quoi = ?, DatesD = ?
+				WHERE idSortie = ?';
 		
 		$statement = $pdo->prepare($sql);
 
@@ -44,17 +37,17 @@ require_once __DIR__ . '/connect.php';
         return false;
     }
 
-    public static function delete ($idClient)
+    public static function delete ($idSortie)
     {
 		global $pdo;
 		
-		$sql = 'DELETE FROM Client
-        WHERE idClient = ?';
+		$sql = 'DELETE FROM Sortie
+        WHERE idSortie = ?';
 		
 		$statement = $pdo->prepare($sql);
 
 		// execute the DELETE statment
-		if ($statement->execute([$idClient])) {
+		if ($statement->execute([$idSortie])) {
 			return true;
 		}
         return false;
@@ -63,7 +56,7 @@ require_once __DIR__ . '/connect.php';
     public static function read()
     {
 		global $pdo;
-		$sql = 'SELECT * FROM Client ORDER BY NomClient ASC ';
+		$sql = 'SELECT * FROM Sortie ORDER BY idSortie DESC ';
 
 		$statement = $pdo->query($sql);
 

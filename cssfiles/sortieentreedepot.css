@@ -17,9 +17,9 @@ h4 {
 html, body {
     height: 100%;
 }
-.d-flex {
+/*.d-flex {
     min-height: 50vh;
-}
+}*/
 
 .table_a_disparaitre {
     position: absolute;
@@ -28,6 +28,10 @@ html, body {
     width: 50vw;
     overflow: auto;
     z-index: 5;
+}
+
+.select2-container {
+    z-index: 999999;
 }
 
 @media only screen and (max-width: 600px) {

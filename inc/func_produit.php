@@ -1,7 +1,7 @@
 <?php
 
 function add_update_produit($urlpost, $flash = '', $Nom = '', $PrixAchat = '', $PrixVente = '', $PrixVmin = '', $QuantiteStock = '', $QuantiteStockMin = '', $DescriptionP = '', $addorupdate = 'add', $id = '') {
-    $width = $addorupdate == 'add' ? 6 : 10;
+    $width = 10;
     $content = "
     $flash
 <h2 class='text-secondary m-2 text-center'>Produit</h2>
@@ -49,4 +49,19 @@ function add_update_produit($urlpost, $flash = '', $Nom = '', $PrixAchat = '', $
         <input type='submit' id='submit' class='btn btn-primary' value='Soumettre'>
     </form>";
     return $content;
+}
+
+function selectOptionForProduct($idProduit = '') {
+    $produit = new Produit();
+    $arrayOfProduct = $produit->read();
+    $option = "<option stock='' value='0'>Choisir un produit</option>";
+    foreach($arrayOfProduct as $array) {
+        if (! empty($idProduit) && ($idProduit == $array["idProduit"])) {
+            $option .= "<option stock='".$array["QuantiteStock"]."' value='".$array["idProduit"]."' selected>Nom -> ".$array["Nom"]." | PV -> ".$array["PrixVente"]."$ | QStock : ".$array["QuantiteStock"]."</option>";
+        } else {
+            $option .= "<option stock='".$array["QuantiteStock"]."' value='".$array["idProduit"]."'>Nom -> ".$array["Nom"]." | PV -> ".$array["PrixVente"]."$ | QStock -> ".$array["QuantiteStock"]."</option>";
+        }
+        
+    }
+    return $option;
 }

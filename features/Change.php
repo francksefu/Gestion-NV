@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/connect.php';
 
-  class Client {
+  class Change {
     
     public $client;
 
@@ -10,30 +10,30 @@ require_once __DIR__ . '/connect.php';
       $this->client = 'client';
     }
 
-    public static function insert ($NomClient, $Telephone)
+    public static function insert ($Dallar, $Chilling, $Rwandais, $CDF)
     {
       global $pdo;
-	  $sql = 'INSERT INTO Client(NomClient, Telephone) VALUES(?,?)';
+	  $sql = 'INSERT INTO Change(Dallar, Chilling, Rwandais, CDF) VALUES(?,?,?,?)';
 
 	  $statement = $pdo->prepare($sql);
 	  
 	  $statement->execute([
-		$NomClient, $Telephone
+		$Dallar, $Chilling, $Rwandais, $CDF
 	  ]);
 
 	  return $pdo->lastInsertId();
     }
 
-    public static function update ($NomClient, $Telephone, $idClient)
+    public static function update ($Dallar, $Chilling, $Rwandais, $CDF, $idChange)
     {
 		global $pdo;
 		$employe = [
-			$NomClient, $Telephone, $idClient
+			$Dallar, $Chilling, $Rwandais, $CDF, $idChange
 		];
 		
-		$sql = 'UPDATE Client
-				SET NomClient = ?, Telephone = ?
-				WHERE idClient = ?';
+		$sql = 'UPDATE Change
+				SET Dallar = ?, Chilling = ?, Rwandais = ?, CDF = ?
+				WHERE idChange = ?';
 		
 		$statement = $pdo->prepare($sql);
 
@@ -44,17 +44,17 @@ require_once __DIR__ . '/connect.php';
         return false;
     }
 
-    public static function delete ($idClient)
+    public static function delete ($id)
     {
 		global $pdo;
 		
-		$sql = 'DELETE FROM Client
-        WHERE idClient = ?';
+		$sql = 'DELETE FROM Change
+        WHERE idChange = ?';
 		
 		$statement = $pdo->prepare($sql);
 
 		// execute the DELETE statment
-		if ($statement->execute([$idClient])) {
+		if ($statement->execute([$id])) {
 			return true;
 		}
         return false;
@@ -63,7 +63,7 @@ require_once __DIR__ . '/connect.php';
     public static function read()
     {
 		global $pdo;
-		$sql = 'SELECT * FROM Client ORDER BY NomClient ASC ';
+		$sql = 'SELECT * FROM `Change` ORDER BY idChange DESC';
 
 		$statement = $pdo->query($sql);
 

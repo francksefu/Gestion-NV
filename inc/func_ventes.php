@@ -1,10 +1,15 @@
 <?php
-function add_update_ventes($url, $flash = '', array $array_of_clients = [], array $array_of_products = [], $idClient = '', $array_of_selected_products = '', $date = '', $vendeur = '', $montant = '', $reste = '', $total = '', $addorupdate = 'add', $operation = '') 
+function add_update_ventes($url, $flash = '', $idClient = '', $array_of_selected_products = [], $DatesVente = null, $idPersonnel = '', $MontantPaye = '', $reste = '', $total = '', $addorupdate = 'add', $operation = '') 
 {
+    global $array_of_products, $change;
+    $allProduct = json_encode($array_of_products);
+    $optionClient = selectOptionForClient($idClient);
+    $optionProduit = selectOptionForProduct();
     $line_of_selected_products = '';
+    $date = $DatesVente ?? date('Y-m-d');
     
-    if(! empty($array_of_selected_product)) {
-        $arr_p_q = json_decode($array_of_selected_product, true);
+    if(! empty($array_of_selected_products)) {
+        $arr_p_q = $array_of_selected_products;
         foreach($arr_p_q as $product_quantity) {
             foreach($array_of_products as $product) {
                 if($product_quantity['idProduit'] == $product['idProduit']) {
@@ -14,30 +19,20 @@ function add_update_ventes($url, $flash = '', array $array_of_clients = [], arra
             }
         }
     }
-    $line = '';
-    foreach($array_of_products as $array) {
-        $line .= "
-                <tr class='line_to_take'>
-                    <th class='id'>".$array['ImageLink']."</th>
-                    <td class='nom'>".$array['Nom']."</td>
-                    <td class='prixVente'>".$array['PrixVente']."</td>
-                    <td class='prixVmin'>".$array['PrixVmin']."</td>
-                    <td class='quantiteStock'>".$array['QuantiteStock']."</td>
-                </tr>
-        ";
-    }
+    
     $content = "
 $flash
 <div class='container bg-transparent pt-5'>
 <h1 class='p-2'>Ajouter ventes</h1>
 <hr class='w-auto'>
-<form action=''>
+<form action='$url' method='POST'>
 <div class='row border border-1 mt-3 pt-3 w-75 d-block mx-auto'>
         <div class='input-group mb-3' >
             <div class='input-group mb-3' id='ancien-client'>
                 <span class='input-group-text' id='basic-addon1'>Nom*</span>
-                <input required type='text' list='dataPersonnel' id='nomClient' class='form-control' placeholder='Nom du client' aria-label='Username' aria-describedby='basic-addon1'>
-                <input type='hidden' id='idClient'>
+                    <select name='idClient' class='js-example-basic-single form-select form-select-lg'>
+                        $optionClient
+                    </select>
             </div>
             <small id='clientVide'></small>
         </div>
@@ -47,8 +42,9 @@ $flash
     <div class='input-group mb-3 pt-5 pb-4' id='ajoutons'>
         <a id='remove' href='#' class='text-decoration-none'><span class='input-group-text bg-danger text-white'>&cross;</span></a>
         <span class='input-group-text border border-primary'>Nom</span>
-        <input id='myInput' type='text' class='form-control border border-primary w-25' placeholder='Entrer nom du produit' aria-label='Username'>
-            
+            <select id='idProduit' name='idProduit' class='js-example-basic-single form-select form-select-lg'>
+                $optionProduit
+            </select>
 
         <span class='input-group-text border border-success'>Quantite</span>
         <input id='quantite' type='number' step='0.0001' class='form-control border border-success' placeholder='Quantite' aria-label='Server'>
@@ -56,24 +52,9 @@ $flash
         <input id='pvu' type='number' step='0.0001' class='form-control' placeholder='prix de vente' aria-label='Server'>
         <span class='input-group-text'>$</span>
         <a id='add' href='#' class='text-decoration-none'><span class='input-group-text bg-success text-white'>&plus;</span></a>
-        <div class='table_a_disparaitre bg-white'>
-                <table class='table table-bordered' id='all-table-product' >
-                    <thead>
-                        <tr>
-                        <th scope='col'>Imagek</th>
-                        <th scope='col'>nom du produit</th>
-                        <th scope='col'>Prix de vente</th>
-                        <th scope='col'>Prix de vente min</th>
-                        <th scope='col'>quantite en stock</th>
-                        </tr>
-                    </thead>
-                    <tbody id='myTable'>
-                        $line
-                    </tbody>
-
-                </table>
-            </div>
+        
     </div>
+     <small id='error'></small>
     <small id='produitVide'></small>
     <small id='quantiteVide'></small>
     <small id='pvuVide'></small>
@@ -89,7 +70,7 @@ $flash
             <th>Action</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id='long-list-of-selected-products'>
                                   
         </tbody>
     </table>
@@ -98,7 +79,7 @@ $flash
         <div class='border border-1 p-4 col-md-4 m-2'>
         <div class='input-group mb-3 '>
             <span class='input-group-text'>Nom du vendeur</span>
-            <input type='text' readonly id='personnel' list='dataPersonnel_' class='form-control' value=''>
+            <input type='text' readonly id='personnel' class='form-control' value='1'>
             <datalist id='dataPersonnel_'>
             
           </datalist>
@@ -113,12 +94,9 @@ $flash
             </div>
             <div class='input-group mb-3'>
                 <span class='input-group-text' id='basic-addon1'>Date*</span>
-                <input required type='date'  name='dates' id='date-vente' class='form-control w-50' placeholder='mettre la date' aria-label='Username' aria-describedby='nom' value=''>
+                <input required type='date'  name='dates' id='date-vente' class='form-control w-50' placeholder='mettre la date' aria-label='Username' aria-describedby='nom' value='$date'>
             </div>
-            <div class='input-group mb-3 border border-1 border-warning'>
-                <span class='input-group-text' id='basic-addon1'>Quantite en stock*</span>
-                <input id='qstock' readonly type='float' class='form-control' aria-label='Username' aria-describedby='basic-addon1'>
-            </div>
+            
             <small>1 commande en cours ...</small>
         </div>
 
@@ -135,13 +113,13 @@ $flash
                 </div>
                 <div class='input-group mb-3'>
                     <span class='input-group-text'>Montant</span>
-                    <input type='float' id='montant'  class='form-control' aria-label='Amount (to the nearest dollar)'>
+                    <input type='number' step='0.0001' name='MontantPaye' value='$MontantPaye' id='montant'  class='form-control' aria-label='Amount (to the nearest dollar)'>
                     <span class='input-group-text'>$</span>
                 </div>
                 <small id='montantVide'></small>
                 <div class='input-group mb-3 '>
                     <span class='input-group-text'>Reste</span>
-                    <input type='flaot' id='reste' class='form-control'  aria-label='Amount (to the nearest dollar)'>
+                    <input readonly type='number' step='0.00001' id='reste' class='form-control'  aria-label='Amount (to the nearest dollar)'>
                     <span class='input-group-text'>$</span>
                 </div>
             </div>
@@ -168,20 +146,19 @@ $flash
            
      
     </div>
-    <input type='hidden' id='change' value='<?php echo data(); ?>'>
 <!-- just using to make difference between add, remove, and update -->
     <input type='hidden' id='state' >
     <input type='hidden' id='i' value=''>
     <input type='hidden' id='operation'/>
+    <input type='hidden' id='object_of_change' value='".json_encode($change)."'>
+    <input type='hidden' id='array_of_selected_products' value='".json_encode($array_of_selected_products)."'>
+    <input type='hidden' id='allProduct' value='$allProduct'>
     <input type='hidden' name='addorupdate' value='$addorupdate'>
     <input type='hidden' name='operation' value='$operation'>
-    <input type='hidden' id='array_of_clients' value='$array_of_clients'>
-    <input type='hidden' id='array_of_products' value='$array_of_products'>
     <input type='hidden' id='stock' value='stock1' />
 </form>
 </div>
 
-//
 <form class='input-group col-md-10 mt-3 mb-3' action='imprimer.php' method='POST'>
 <span class='input-group-text'>choisissez une facture : </span>
 <input required type='text' id='imprimer' name='Facture' list='dataBesoin' class='form-control' placeholder='metez quelque chose dont vous vous rappeler pour l imprimer' >
