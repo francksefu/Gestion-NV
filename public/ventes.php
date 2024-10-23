@@ -7,6 +7,7 @@
     require_once __DIR__.'/../features/Ventes.php';
     require_once __DIR__.'/../features/Produit.php';
     require_once __DIR__.'/../features/Client.php';
+    require_once __DIR__.'/../features/Change.php';
     require __DIR__.'/../inc/header.php';
     //require_login();
     $errors = [];
@@ -14,6 +15,7 @@
     $valid = false;
     $produit = new Produit();
     $array_of_clients = Client::read();
+    $change = Change::read()[0];
     $array_of_products = $produit->read(); 
     $request_method = strtoupper($_SERVER["REQUEST_METHOD"]);
     if($request_method === 'GET') {

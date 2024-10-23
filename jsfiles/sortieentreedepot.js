@@ -47,13 +47,7 @@ $(document).ready(function(){
     });
     $('#generale-table').on('mouseover', function() {
         const arrnew = JSON.parse($('#array_of_product_and_quantity').val());
-        $('.supprime').each(function(index) {
-            $(this).on('click',function() {
-                arrnew.splice(index, 1);
-                $(this).parents('tr').remove();
-                $('#array_of_product_and_quantity').val(JSON.stringify(arrnew));
-            });
-        });
+        
     });
     
 
@@ -182,6 +176,9 @@ function isItAnEmptyString(element, message) {
 $(document).ready(function() {
     let array_of_selected_products = $('#array_of_selected_products').val();
     array_of_selected_products = JSON.parse(array_of_selected_products);
+
+    let object_of_change = $('#object_of_change').val();
+    object_of_change = JSON.parse(object_of_change);
     let inputIdProduit = $('#idProduit');
     let inputQuantite = $('#quantite');
     let inputPrixVenteU = $('#pvu');
@@ -230,19 +227,38 @@ $(document).ready(function() {
             $('#error').html(error.message);
             $('#error').addClass('alert alert-danger');
         } finally {
-            if (array_of_selected_products) {
-                let total = 0;
-                for(let selected_produit of array_of_selected_products) {
-                    total += selected_produit['PT']();
+            function calcul(array_of_selected_products) {
+                if (array_of_selected_products) {
+                    let total = 0;
+                    for(let selected_produit of array_of_selected_products) {
+                        total += selected_produit['PT']();
+                    }
+                    $('#total').val(total);
+                    $('#cdf').val(total * object_of_change['CDF']);
+                    $('#chilling').val(total * object_of_change['Chilling']);
+                    $('#rwandais').val(total * object_of_change['Rwandais']);
                 }
-                $('#total').val(total);
             }
+            $('.supprime').each(function(index) {
+                $(this).on('click',function() {
+                    array_of_selected_products.splice(index, 1);
+                    $(this).parents('tr').remove();
+                    $('#array_of_selected_products').val(JSON.stringify(array_of_selected_products));
+                    calcul(array_of_selected_products);
+                });
+            });
+            calcul(array_of_selected_products);
+            
         }
         
     });
     $(inputIdProduit).on('change', function(){
         $(inputPrixVenteU).val(findProduct(inputIdProduit.val())['PrixVente']);
     });
+
+    $('#montant').on('change', function() {
+        $('#reste').val($('#total').val() - $(this).val());
+    })
 });
 
 
