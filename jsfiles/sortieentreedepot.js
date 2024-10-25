@@ -174,8 +174,28 @@ function isItAnEmptyString(element, message) {
     return '';
 }
 $(document).ready(function() {
+    function adding_line_of_product(produit, quantite, pvu) {
+        let image = (produit['ImageLink']) && (produit['ImageLink'].includes('.')) ? produit['ImageLink'] : 'banane.png';
+            let line_product = `
+                <div class='d-flex flex-row' id='taille'>
+                    <img src ='upload_files/${image}' class=' photo m-0' width='70px' height='70px' alt='produit'>
+                    <div class='ps-2 m-0'>
+                        <h4 class='text-end'>"${produit['Nom']}"</h4>
+                        <small class='text-secondary'>"${produit['DescriptionP']}"</small><br>
+                        <button type='button' class='btn btn-success m-1' data-bs-toggle='modal' data-bs-target='#picture_".$array['idBonusPerte']."'> Voir photo</button>
+                    </div>
+                </div>
+            `;
+            let line = "<tr class='line_show'><td>"+line_product+"</td><td>" + quantite + "</td><td>" + pvu + "</td><td>" + (quantite * 1) * (pvu * 1) + "</td><td> <a href='#' class='btn btn-danger supprime'> Supprimer </a> </td></tr>";
+            $('#long-list-of-selected-products').append(line);
+    }
     let array_of_selected_products = $('#array_of_selected_products').val();
     array_of_selected_products = JSON.parse(array_of_selected_products);
+    if (array_of_selected_products.length > 0) {
+        for (let selectedProduct of array_of_selected_products) {
+            adding_line_of_product(selectedProduct['produit'], selectedProduct['QuantiteVendu'], selectedProduct['PU']);
+        }
+    }
 
     let object_of_change = $('#object_of_change').val();
     object_of_change = JSON.parse(object_of_change);
@@ -202,19 +222,7 @@ $(document).ready(function() {
             if ($(inputPrixVenteU).val() < produit['PrixVmin']) {
                 throw new Error('Vous voulez vendre ce produit a un tres bas prix, veuillez verifier le prix de vente minimum de ce produit dans le menu produit svp. merci<br>');
             }
-            let image = (produit['ImageLink']) && (produit['ImageLink'].includes('.')) ? produit['ImageLink'] : 'banane.png';
-            let line_product = `
-                <div class='d-flex flex-row' id='taille'>
-                    <img src ='upload_files/${image}' class=' photo m-0' width='70px' height='70px' alt='produit'>
-                    <div class='ps-2 m-0'>
-                        <h4 class='text-end'>"${produit['Nom']}"</h4>
-                        <small class='text-secondary'>"${produit['DescriptionP']}"</small><br>
-                        <button type='button' class='btn btn-success m-1' data-bs-toggle='modal' data-bs-target='#picture_".$array['idBonusPerte']."'> Voir photo</button>
-                    </div>
-                </div>
-            `;
-            let line = "<tr class='line_show'><td>"+line_product+"</td><td>" + $('#quantite').val() + "</td><td>" + $('#pvu').val() + "</td><td>" + ($('#quantite').val() * 1) * ($('#pvu').val()*1) + "</td><td> <a href='#' class='btn btn-danger supprime'> Supprimer </a> </td></tr>";
-            $('#long-list-of-selected-products').append(line);
+            adding_line_of_product(produit, $('#quantite').val(), $('#pvu').val());
             array_of_selected_products.push({produit: produit, QuantiteVendu: $('#quantite').val(), PU: $('#pvu').val(), PT: function(){return this.QuantiteVendu * this.PU}});
             $('#array_of_selected_products').val(JSON.stringify(array_of_selected_products));
             

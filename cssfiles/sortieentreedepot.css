@@ -34,6 +34,10 @@ html, body {
     z-index: 999999;
 }
 
+.min-w {
+    min-width: 80vw;
+}
+
 @media only screen and (max-width: 600px) {
     .table_a_disparaitre {
         position: absolute;

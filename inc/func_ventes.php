@@ -1,5 +1,5 @@
 <?php
-function add_update_ventes($url, $flash = '', $idClient = '', $array_of_selected_products = [], $DatesVente = null, $idPersonnel = '', $MontantPaye = '', $reste = '', $total = '', $addorupdate = 'add', $operation = '') 
+function add_update_ventes($url, $flash = '', $idClient = '', $array_of_selected_products = [], $DatesVente = null, $idPersonnel = '', $MontantPaye = '', $TotalFacture = '', $addorupdate = 'add', $operation = '') 
 {
     global $array_of_products, $change;
     $allProduct = json_encode($array_of_products);
@@ -8,7 +8,7 @@ function add_update_ventes($url, $flash = '', $idClient = '', $array_of_selected
     $line_of_selected_products = '';
     $date = $DatesVente ?? date('Y-m-d');
     
-    if(! empty($array_of_selected_products)) {
+    /*if(! empty($array_of_selected_products)) {
         $arr_p_q = $array_of_selected_products;
         foreach($arr_p_q as $product_quantity) {
             foreach($array_of_products as $product) {
@@ -18,7 +18,7 @@ function add_update_ventes($url, $flash = '', $idClient = '', $array_of_selected
                 }
             }
         }
-    }
+    }*/
     
     $content = "
 $flash
@@ -80,9 +80,7 @@ $flash
         <div class='input-group mb-3 '>
             <span class='input-group-text'>Nom du vendeur</span>
             <input type='text' readonly id='personnel' class='form-control' value='1'>
-            <datalist id='dataPersonnel_'>
             
-          </datalist>
           <small id='personnelVide'></small>
         </div>
 
@@ -94,7 +92,7 @@ $flash
             </div>
             <div class='input-group mb-3'>
                 <span class='input-group-text' id='basic-addon1'>Date*</span>
-                <input required type='date'  name='dates' id='date-vente' class='form-control w-50' placeholder='mettre la date' aria-label='Username' aria-describedby='nom' value='$date'>
+                <input required type='date'  name='dates' id='date-vente' class='form-control w-50' placeholder='mettre la date'  value='$date'>
             </div>
             
             <small>1 commande en cours ...</small>
@@ -113,32 +111,32 @@ $flash
                 </div>
                 <div class='input-group mb-3'>
                     <span class='input-group-text'>Montant</span>
-                    <input type='number' step='0.0001' name='MontantPaye' value='$MontantPaye' id='montant'  class='form-control' aria-label='Amount (to the nearest dollar)'>
+                    <input type='number' step='0.0001' name='MontantPaye' value='$MontantPaye' id='montant'  class='form-control' >
                     <span class='input-group-text'>$</span>
                 </div>
                 <small id='montantVide'></small>
                 <div class='input-group mb-3 '>
                     <span class='input-group-text'>Reste</span>
-                    <input readonly type='number' step='0.00001' id='reste' class='form-control'  aria-label='Amount (to the nearest dollar)'>
+                    <input readonly type='number' step='0.00001' id='reste' class='form-control' >
                     <span class='input-group-text'>$</span>
                 </div>
             </div>
             <div class='border border-1 col-md-3 m-2 bg-warning moinClaire'>
                 <h4 class='text-secondary'>Calcul du total</h4>
                 <div class='input-group mb-3'>
-                    <input type='float' id='total' readonly class='form-control' placeholder='0.00' aria-label='Recipient's username' aria-describedby='basic-addon0'>
+                    <input type='float' id='total' name='total' value='$TotalFacture' readonly class='form-control' placeholder='0.00' >
                     <span class='input-group-text' id='basic-addon0'>$</span>
                 </div>
                 <div class='input-group mb-3'>
-                    <input type='float' id='cdf' readonly class='form-control' placeholder='0.00' aria-label='Recipient's username' aria-describedby='basic-addon1'>
+                    <input type='float' id='cdf' readonly class='form-control' placeholder='0.00' >
                     <span class='input-group-text' id='basic-addon'>Fc</span>
                 </div>
                 <div class='input-group mb-3'>
-                    <input type='float' id='chilling' readonly class='form-control' placeholder='0.00' aria-label='Recipient's username' aria-describedby='basic-addon2'>
+                    <input type='float' id='chilling' readonly class='form-control' placeholder='0.00' >
                     <span class='input-group-text' id='basic-addon2'>chilling</span>
                 </div>
                 <div class='input-group mb-3'>
-                    <input type='float' id='rwandais' readonly class='form-control' placeholder='0.00' aria-label='Recipient's username' aria-describedby='basic-addon2'>
+                    <input type='float' id='rwandais' readonly class='form-control' placeholder='0.00' >
                     <span class='input-group-text' id='basic-addon2'>RWD</span>
                 </div>
 
@@ -159,19 +157,20 @@ $flash
 </form>
 </div>
 
-<form class='input-group col-md-10 mt-3 mb-3' action='imprimer.php' method='POST'>
-<span class='input-group-text'>choisissez une facture : </span>
-<input required type='text' id='imprimer' name='Facture' list='dataBesoin' class='form-control' placeholder='metez quelque chose dont vous vous rappeler pour l imprimer' >
-    <datalist id='dataBesoin'>
-        <?php 
-            dataVente();
-        ?>
-    </datalist>
-<span class='input-group-text pointe' id='cross'>&cross;</span>
-<span class='input-group-text pointe' id='btn'>
-<input type='submit' value='Imprimer' />  
-</span>
-</form>";
+";
 
 return $content;
+}
+
+function array_of_selected_product($Operation) {
+    global $produit;
+    $arrayOfventes = Vente::read($Operation);
+    $selected_products = [];
+    if (! empty($arrayOfventes)) {
+        foreach($arrayOfventes as $vente) {
+            $produitCorrespondante = $produit->read($vente['idProduit']);
+            $selected_products[] = array('produit' => $produitCorrespondante, 'QuantiteVendu' => $vente['QuantiteVendu'], 'PU' => $vente['PU']);
+        }
+    }
+    return $selected_products;
 }
