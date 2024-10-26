@@ -7,32 +7,43 @@ function add_update_ventes($url, $flash = '', $idClient = '', $array_of_selected
     $optionProduit = selectOptionForProduct();
     $line_of_selected_products = '';
     $date = $DatesVente ?? date('Y-m-d');
-    
-    /*if(! empty($array_of_selected_products)) {
+    if(false) {
         $arr_p_q = $array_of_selected_products;
         foreach($arr_p_q as $product_quantity) {
             foreach($array_of_products as $product) {
                 if($product_quantity['idProduit'] == $product['idProduit']) {
-                    $line_of_selected_products .= "<tr class='line_show'><td>".$product_quantity['ImageLink']."</td><td>".$product['Nom']."</td><td>" .$product_quantity['QuantiteVendu']. "</td><td>" .$product_quantity['PU']. "</td><td>" .$product_quantity['PT']. "</td><td> <a href='#' class='btn btn-danger supprime'> Supprimer </a> </td></tr>";
+                    $image = ($product['ImageLink']) && (str_contains($product['ImageLink'], '.')) ? $product['ImageLink'] : 'banane.png';
+                    $line_product = "
+                        <div class='d-flex flex-row' id='taille'>
+                            <img src ='upload_files/$image' class=' photo m-0' width='70px' height='70px' alt='produit'>
+                            <div class='ps-2 m-0'>
+                                <h4 class='text-end'>" . $product['Nom'] . "</h4>
+                                <small class='text-secondary'>" . $product['DescriptionP'] . "</small><br>
+                                <button type='button' class='btn btn-success m-1' data-bs-toggle='modal' data-bs-target='#picture_'> Voir photo</button>
+                            </div>
+                        </div>
+                    ";
+                    $line_of_selected_products .= "<tr class='line_show'><td>$line_product</td><td>" . $product_quantity['QuantiteVendu'] . "</td><td>" . $product_quantity['PU'] . "</td><td>" . $product_quantity['QuantiteVendu'] * $product_quantity['PU'] . "</td><td> <a href='#' class='btn btn-danger supprime'> Supprimer </a> </td></tr>";
                     break;
                 }
             }
         }
-    }*/
+    }
     
     $content = "
 $flash
-<div class='container bg-transparent pt-5'>
+
+
 <h1 class='p-2'>Ajouter ventes</h1>
 <hr class='w-auto'>
 <form action='$url' method='POST'>
-<div class='row border border-1 mt-3 pt-3 w-75 d-block mx-auto'>
+    <div class='row border border-1 mt-3 pt-3 w-75 d-block mx-auto'>
         <div class='input-group mb-3' >
             <div class='input-group mb-3' id='ancien-client'>
                 <span class='input-group-text' id='basic-addon1'>Nom*</span>
-                    <select name='idClient' class='js-example-basic-single form-select form-select-lg'>
+                <select name='idClient' class='js-example-basic-single form-select form-select-lg'>
                         $optionClient
-                    </select>
+                </select>
             </div>
             <small id='clientVide'></small>
         </div>
@@ -54,7 +65,7 @@ $flash
         <a id='add' href='#' class='text-decoration-none'><span class='input-group-text bg-success text-white'>&plus;</span></a>
         
     </div>
-     <small id='error'></small>
+    <small id='error'></small>
     <small id='produitVide'></small>
     <small id='quantiteVide'></small>
     <small id='pvuVide'></small>
@@ -71,18 +82,18 @@ $flash
           </tr>
         </thead>
         <tbody id='long-list-of-selected-products'>
-                                  
+                $line_of_selected_products                  
         </tbody>
     </table>
 
     <div class='row'>
         <div class='border border-1 p-4 col-md-4 m-2'>
-        <div class='input-group mb-3 '>
-            <span class='input-group-text'>Nom du vendeur</span>
-            <input type='text' readonly id='personnel' class='form-control' value='1'>
-            
-          <small id='personnelVide'></small>
-        </div>
+            <div class='input-group mb-3 '>
+                <span class='input-group-text'>Nom du vendeur</span>
+                <input type='text' readonly id='personnel' class='form-control' value='1'>
+                
+                <small id='personnelVide'></small>
+            </div>
 
             <div class='input-group mb-3'>
                 <label class='input-group-text' for='inputGroupSelect01'>Choisir stock</label>
@@ -98,49 +109,49 @@ $flash
             <small>1 commande en cours ...</small>
         </div>
 
-            <div class='border border-1 m-2 col-md-4'>
-                <h4>Status</h4>
-                <div class='input-group mb-3'>
-                    <label class='input-group-text' for='status'>status</label>
-                    <select class='form-select' id='status'>
-                      <option selected>en attente</option>
-                      <option value='paid'>paye</option>
-                      <option value='dette'>dette</option>
-                    </select>
-                    <button id='envoi' type='button' class='btn btn-primary'>Valider</button>
-                </div>
-                <div class='input-group mb-3'>
-                    <span class='input-group-text'>Montant</span>
-                    <input type='number' step='0.0001' name='MontantPaye' value='$MontantPaye' id='montant'  class='form-control' >
-                    <span class='input-group-text'>$</span>
-                </div>
-                <small id='montantVide'></small>
-                <div class='input-group mb-3 '>
-                    <span class='input-group-text'>Reste</span>
-                    <input readonly type='number' step='0.00001' id='reste' class='form-control' >
-                    <span class='input-group-text'>$</span>
-                </div>
+        <div class='border border-1 m-2 col-md-4'>
+            <h4>Status</h4>
+            <div class='input-group mb-3'>
+                 <label class='input-group-text' for='status'>status</label>
+                <select class='form-select' id='status'>
+                    <option selected>en attente</option>
+                    <option value='paid'>paye</option>
+                    <option value='dette'>dette</option>
+                </select>
+                <button id='envoi' type='button' class='btn btn-primary'>Valider</button>
             </div>
-            <div class='border border-1 col-md-3 m-2 bg-warning moinClaire'>
-                <h4 class='text-secondary'>Calcul du total</h4>
-                <div class='input-group mb-3'>
-                    <input type='float' id='total' name='total' value='$TotalFacture' readonly class='form-control' placeholder='0.00' >
-                    <span class='input-group-text' id='basic-addon0'>$</span>
-                </div>
-                <div class='input-group mb-3'>
-                    <input type='float' id='cdf' readonly class='form-control' placeholder='0.00' >
-                    <span class='input-group-text' id='basic-addon'>Fc</span>
-                </div>
-                <div class='input-group mb-3'>
-                    <input type='float' id='chilling' readonly class='form-control' placeholder='0.00' >
-                    <span class='input-group-text' id='basic-addon2'>chilling</span>
-                </div>
-                <div class='input-group mb-3'>
-                    <input type='float' id='rwandais' readonly class='form-control' placeholder='0.00' >
-                    <span class='input-group-text' id='basic-addon2'>RWD</span>
-                </div>
+            <div class='input-group mb-3'>
+                <span class='input-group-text'>Montant</span>
+                <input type='number' step='0.0001' name='MontantPaye' value='$MontantPaye' id='montant'  class='form-control' >
+                <span class='input-group-text'>$</span>
+            </div>
+            <small id='montantVide'></small>
+            <div class='input-group mb-3 '>
+                <span class='input-group-text'>Reste</span>
+                <input readonly type='number' step='0.00001' id='reste' class='form-control' >
+                <span class='input-group-text'>$</span>
+            </div>
+        </div>
+        <div class='border border-1 col-md-3 m-2 bg-warning moinClaire'>
+            <h4 class='text-secondary'>Calcul du total</h4>
+            <div class='input-group mb-3'>
+                <input type='float' id='total' name='total' value='$TotalFacture' readonly class='form-control' placeholder='0.00' >
+                <span class='input-group-text' id='basic-addon0'>$</span>
+            </div>
+            <div class='input-group mb-3'>
+                <input type='float' id='cdf' readonly class='form-control' placeholder='0.00' >
+                <span class='input-group-text' id='basic-addon'>Fc</span>
+            </div>
+            <div class='input-group mb-3'>
+                <input type='float' id='chilling' readonly class='form-control' placeholder='0.00' >
+                <span class='input-group-text' id='basic-addon2'>chilling</span>
+            </div>
+            <div class='input-group mb-3'>
+                <input type='float' id='rwandais' readonly class='form-control' placeholder='0.00' >
+                <span class='input-group-text' id='basic-addon2'>RWD</span>
+            </div>
 
-            </div>
+        </div>
            
      
     </div>
@@ -153,9 +164,9 @@ $flash
     <input type='hidden' id='allProduct' value='$allProduct'>
     <input type='hidden' name='addorupdate' value='$addorupdate'>
     <input type='hidden' name='operation' value='$operation'>
-    <input type='hidden' id='stock' value='stock1' />
+    <input type='hidden' id='stock' value='stock1'>
 </form>
-</div>
+
 
 ";
 

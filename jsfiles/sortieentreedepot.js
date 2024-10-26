@@ -191,11 +191,11 @@ $(document).ready(function() {
     }
     let array_of_selected_products = $('#array_of_selected_products').val();
     array_of_selected_products = JSON.parse(array_of_selected_products);
-    if (array_of_selected_products.length > 0) {
+    /*if (array_of_selected_products.length > 0) {
         for (let selectedProduct of array_of_selected_products) {
             adding_line_of_product(selectedProduct['produit'], selectedProduct['QuantiteVendu'], selectedProduct['PU']);
         }
-    }
+    }*/
 
     let object_of_change = $('#object_of_change').val();
     object_of_change = JSON.parse(object_of_change);

@@ -121,8 +121,9 @@ function redirect_with_message(string $message, string $type=FLASH_ERROR, string
     exit;
 }
 
-function modal($id, $modaltitle, $modalbody, $linkaction, $namepost, $valuepost, $buttonname, $type='no', $delete = true, $filepathtodelete = '')
+function modal($id, $modaltitle, $modalbody, $linkaction, $namepost, $valuepost, $buttonname, $type='no', $delete = true, $filepathtodelete = '', $xlarge = false)
 {
+    $modal_x_large = $xlarge ? 'modal-xl' : '';
     if ($delete) {
         $type_modal = "
         <form method='post' action='$linkaction' class='col-5'>
@@ -137,8 +138,8 @@ function modal($id, $modaltitle, $modalbody, $linkaction, $namepost, $valuepost,
     }
     
     $content = "
-    <div class='modal fade' id='$id'  aria-labelledby='exampleModalLabel' aria-hidden='true'>
-      <div class='modal-dialog'>
+    <div class='modal fade' id='$id' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+      <div class='modal-dialog $modal_x_large'>
         <div class='modal-content'>
           <div class='modal-header'>
             <h5 class='modal-title' id='exampleModalLabel'>$modaltitle</h5>

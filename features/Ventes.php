@@ -78,7 +78,7 @@ require_once __DIR__ . '/Produit.php';
                 return $statement->fetchAll(PDO::FETCH_ASSOC);
             }
         } else {
-            $sql = 'SELECT Operation FROM Ventes GROUP BY Operation ORDER BY Operation DESC LIMIT 500';
+            $sql = 'SELECT Operation FROM Ventes GROUP BY Operation ORDER BY Operation DESC LIMIT 200';
 
             $statement = $pdo->query($sql);
 

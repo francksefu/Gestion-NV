@@ -10,7 +10,7 @@
         <div class="col-md-8">
             
         </div>
-        <button type='button' class='btn btn-primary col-md-3 p-2 m-2' data-bs-toggle='modal' data-bs-target='#add'>
+        <button type='button' class='btn btn-primary col-md-3 p-2 m-2 add' data-bs-toggle='modal' data-bs-target='#add'>
             Ajouter vente         
         </button>
     </div>
@@ -32,6 +32,7 @@
     </thead>
     <tbody id='tbody'>
         <?php
+        $modal = '';
             //$auth = (isset($_SESSION['post']) && $_SESSION['post'] !=='directeur');
             foreach($default_array as $content) {
                 
@@ -73,23 +74,26 @@
                             </td>
                         </tr>
                 ";
-                //
-                //$content_update = add_update_ventes(htmlspecialchars($_SERVER['PHP_SELF']), '', $array[0]['idClient'], array_of_selected_product($array[0]['Operation']), $array[0]['DatesVente'], $array[0]['idPersonnel'] , $array[0]['MontantPaye'], $array[0]['TotalFacture'], 'update', $array[0]['Operation']);
+                $content_update = add_update_ventes(htmlspecialchars($_SERVER['PHP_SELF']), '', $array[0]['idClient'], array_of_selected_product($array[0]['Operation']), $array[0]['DatesVente'], $array[0]['idPersonnel'] , $array[0]['MontantPaye'], $array[0]['TotalFacture'], 'update', $array[0]['Operation']);
+                $modal .= modal("update_".$array[0]['Operation']."", 'Modifier la vente', $content_update, htmlspecialchars($_SERVER["PHP_SELF"]), 'update', "update_".$array[0]['Operation']."", 'modifier', '', false, '', true);
+          
                 echo true ? modal("delete_".$array[0]['Operation']."", "Supprimer la facture de vente ".$array[0]['DatesVente']."", "Voulez-vous vraiment supprimer la facture dont l operation est : ".$array[0]['Operation']." qui a ete faite le : ".$array[0]['DatesVente']."", htmlspecialchars($_SERVER["PHP_SELF"]), 'delete', "delete_".$array[0]['Operation']."", 'supprimer') : '';
-                //echo true ? modal("update_".$array[0]['Operation']."", 'Modifier la vente', $content_update, htmlspecialchars($_SERVER["PHP_SELF"]), 'update', "update_".$array[0]['Operation']."", 'modifier', '', false) : '' ;
                 echo $line;
             }
-            $content_add = add_update_ventes(htmlspecialchars($_SERVER['PHP_SELF']), '');
-            echo true ? modal("add", 'Ajouter une sortie', $content_add, htmlspecialchars($_SERVER["PHP_SELF"]), 'add', "Add", 'Ajouter', '', false) : '' ;
+            
+            
         ?>
         
     </tbody>
 </table>
+
 </div>
 <!-- Button trigger modal -->
 
 
 <?php
-    
+    $content_add = add_update_ventes(htmlspecialchars($_SERVER['PHP_SELF']), '');
+    echo true ? modal("add", 'Ajouter une vente', $content_add, htmlspecialchars($_SERVER["PHP_SELF"]), 'add', "Add", 'Ajouter', '', false, '', true) : '' ;
+    echo $modal;
 ?>
 </main>
