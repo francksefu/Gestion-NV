@@ -149,11 +149,10 @@ $(document).ready(function(){
 
 
   
-
+/*
 $(document).ready(function() {
     $('.js-example-basic-single').select2();
-
-});
+});*/
 function findProduct(idProduit) {
     let allProduct = $('#allProduct').val();
     allProduct = JSON.parse(allProduct);
@@ -203,7 +202,6 @@ $(document).ready(function() {
     let inputQuantite = $('#quantite');
     let inputPrixVenteU = $('#pvu');
     $('#add').on('click', function() {
-        
         try {
             isItAnEmptyString(inputIdProduit, 'Le produit ne doit pas etre vide <br>');
             isItAnEmptyString(inputQuantite, 'Veuillez completer la quantite svp <br>');
@@ -269,6 +267,9 @@ $(document).ready(function() {
     })
 });
 
-
+document.querySelectorAll('.js-example-basic-single').forEach((el)=>{
+	let settings = {};
+ 	new TomSelect(el,settings);
+});
 
 
