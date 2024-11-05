@@ -201,8 +201,10 @@ $(document).ready(function() {
     let inputIdProduit = $('#idProduit');
     let inputQuantite = $('#quantite');
     let inputPrixVenteU = $('#pvu');
+    let i = 0;
     $('#add').on('click', function() {
         try {
+            i += 1;
             isItAnEmptyString(inputIdProduit, 'Le produit ne doit pas etre vide <br>');
             isItAnEmptyString(inputQuantite, 'Veuillez completer la quantite svp <br>');
             isItAnEmptyString(inputPrixVenteU, 'Veuillez completer le prix de vente svp <br>');
@@ -245,14 +247,27 @@ $(document).ready(function() {
                     $('#rwandais').val(total * object_of_change['Rwandais']);
                 }
             }
-            $('.supprime').each(function(index) {
-                $(this).on('click',function() {
-                    array_of_selected_products.splice(index, 1);
-                    $(this).parents('tr').remove();
-                    $('#array_of_selected_products').val(JSON.stringify(array_of_selected_products));
-                    calcul(array_of_selected_products);
+            let sup = '';
+            let indsup = '';
+            if (true) {
+                $('.supprime').each(function(index, element) {
+                    $(element).off('click');
+                    $(element).on('click',() => {
+                        console.log({index});
+                        array_of_selected_products.splice(index, 1);
+                        $(element).parents('tr').remove();
+                        
+                        console.log('length' + array_of_selected_products.length);
+                        $('#array_of_selected_products').val(JSON.stringify(array_of_selected_products));
+                        calcul(array_of_selected_products);
+                        //return false;
+                        
+                    });
+                    
                 });
-            });
+            }
+
+            
             calcul(array_of_selected_products);
             
         }

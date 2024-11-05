@@ -160,7 +160,7 @@ $flash
     <input type='hidden' id='i' value=''>
     <input type='hidden' id='operation'/>
     <input type='hidden' id='object_of_change' value='".json_encode($change)."'>
-    <input type='hidden' id='array_of_selected_products' value='".json_encode($array_of_selected_products)."'>
+    <input type='text' id='array_of_selected_products' value='".json_encode($array_of_selected_products)."'>
     <input type='hidden' id='allProduct' value='$allProduct'>
     <input type='hidden' name='addorupdate' value='$addorupdate'>
     <input type='hidden' name='operation' value='$operation'>
