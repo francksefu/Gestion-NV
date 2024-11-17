@@ -153,6 +153,19 @@ $(document).ready(function(){
 $(document).ready(function() {
     $('.js-example-basic-single').select2();
 });*/
+function calcul(array_of_selected_products) {
+    if (array_of_selected_products) {
+        let total = 0;
+        for(let selected_produit of array_of_selected_products) {
+            total += selected_produit['PT']();
+        }
+        $('#total').val(total);
+        $('#cdf').val(total * object_of_change['CDF']);
+        $('#chilling').val(total * object_of_change['Chilling']);
+        $('#rwandais').val(total * object_of_change['Rwandais']);
+    }
+}
+
 function findProduct(idProduit) {
     let allProduct = $('#allProduct').val();
     allProduct = JSON.parse(allProduct);
@@ -195,7 +208,27 @@ $(document).ready(function() {
             adding_line_of_product(selectedProduct['produit'], selectedProduct['QuantiteVendu'], selectedProduct['PU']);
         }
     }*/
-
+    function deletion(array_of_selected_products) {
+        $('.supprime').each(function(index, element) {
+            $(element).off('click');
+            $(element).on('click',() => {
+                console.log({index});
+                array_of_selected_products.splice(index, 1);
+                $(element).parents('tr').remove();
+                
+                console.log('length' + array_of_selected_products.length);
+                $('#array_of_selected_products').val(JSON.stringify(array_of_selected_products));
+                calcul(array_of_selected_products);
+                //return false;
+                if ($('.supprime')) {
+                    console.log('yes');
+                    $(element).off('click');
+                    deletion(array_of_selected_products);
+                }
+            });
+            
+        });
+    }
     let object_of_change = $('#object_of_change').val();
     object_of_change = JSON.parse(object_of_change);
     let inputIdProduit = $('#idProduit');
@@ -235,36 +268,11 @@ $(document).ready(function() {
             $('#error').html(error.message);
             $('#error').addClass('alert alert-danger');
         } finally {
-            function calcul(array_of_selected_products) {
-                if (array_of_selected_products) {
-                    let total = 0;
-                    for(let selected_produit of array_of_selected_products) {
-                        total += selected_produit['PT']();
-                    }
-                    $('#total').val(total);
-                    $('#cdf').val(total * object_of_change['CDF']);
-                    $('#chilling').val(total * object_of_change['Chilling']);
-                    $('#rwandais').val(total * object_of_change['Rwandais']);
-                }
-            }
+            
             let sup = '';
             let indsup = '';
             if (true) {
-                $('.supprime').each(function(index, element) {
-                    $(element).off('click');
-                    $(element).on('click',() => {
-                        console.log({index});
-                        array_of_selected_products.splice(index, 1);
-                        $(element).parents('tr').remove();
-                        
-                        console.log('length' + array_of_selected_products.length);
-                        $('#array_of_selected_products').val(JSON.stringify(array_of_selected_products));
-                        calcul(array_of_selected_products);
-                        //return false;
-                        
-                    });
-                    
-                });
+                deletion(array_of_selected_products);
             }
 
             
